@@ -4,10 +4,10 @@
 {% for area in areas %}
 <h3>{{ area.city }}, {{ area.state }}</h3>
 	<ul class="items">
-		{% for venue in area.venues %}
+		{% for venue in venues_by_area[area.city + ', ' + area.state] %}
 		<li>
 			<a href="/venues/{{ venue.id }}">
-				<i class="fas fa-music"></i>
+				<img src="{{ venue.image_link }}" alt="{{ venue.name }} Image" />
 				<div class="item">
 					<h5>{{ venue.name }}</h5>
 				</div>
