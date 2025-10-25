@@ -129,8 +129,21 @@ source .venv/bin/activate  # Linux/Mac
 ```
 
 ### 3. Instalar Dependências
+
+#### Opção A: Usando pip (Recomendado para Revisão)
 ```bash
+pip install -r requirements.txt
+```
+
+#### Opção B: Usando uv (Desenvolvimento Moderno)
+```bash
+# Instalar uv (se não estiver instalado)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Instalar dependências
 uv pip install -r requirements.txt
+# ou
+uv sync
 ```
 
 ### 4. Configurar Banco de Dados
@@ -164,8 +177,15 @@ python scripts/seed.py
 ```
 
 ### 7. Executar Aplicação
+
+#### Opção A: Usando pip
 ```bash
 python app.py
+```
+
+#### Opção B: Usando uv
+```bash
+uv run python app.py
 ```
 
 A aplicação estará disponível em: `http://127.0.0.1:5000`
@@ -287,6 +307,66 @@ python app.py
 ```bash
 # Usar WSGI server como Gunicorn
 gunicorn -w 4 -b 0.0.0.0:5000 app:app
+```
+
+## 🐛 Solução de Problemas
+
+### Erro: "ModuleNotFoundError: No module named 'dotenv'"
+```bash
+# Instalar python-dotenv especificamente
+pip install python-dotenv==1.1.1
+
+# Ou reinstalar todas as dependências
+pip install -r requirements.txt
+```
+
+### Erro: "ModuleNotFoundError: No module named 'flask'" (com uv)
+```bash
+# Usar uv para executar
+uv run python app.py
+
+# Ou ativar ambiente virtual primeiro
+source .venv/bin/activate
+python app.py
+```
+
+### Erro: "Address already in use" / "Port 5000 is in use"
+```bash
+# A aplicação agora encontra automaticamente uma porta livre
+# Se 5000 estiver ocupada, usará 5001, 5002, etc.
+python app.py
+
+# Ou matar processos na porta 5000
+lsof -ti:5000 | xargs kill -9
+python app.py
+```
+
+### Erro: "No such file or directory: 'fyyur.db'"
+```bash
+# Executar migrações para criar o banco
+flask db upgrade
+
+# Ou executar o seed que cria o banco automaticamente
+python scripts/seed.py
+```
+
+### Erro: "Template not found"
+```bash
+# Verificar se está executando do diretório correto
+cd /path/to/fyyur-backend-project
+python app.py
+```
+
+### Verificar Instalação
+```bash
+# Testar importação do dotenv
+python -c "from dotenv import load_dotenv; print('python-dotenv OK')"
+
+# Testar configuração
+python -c "import config; print('Config OK')"
+
+# Testar aplicação Flask
+python -c "from app import create_app; print('Flask App OK')"
 ```
 
 ## 📚 Documentação Adicional
